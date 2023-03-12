@@ -10,9 +10,9 @@ public interface Repo0 <ID, E extends Entity<ID>>{
 
     Iterable<E> findAll();
 
-    Optional<E> save(E entity);
+    void save(E entity);
 
-    Optional<E> delete(ID id);
+    void delete(ID id);
 
-    Optional<E> update(E entity);
+    void update(E entity);
 }
