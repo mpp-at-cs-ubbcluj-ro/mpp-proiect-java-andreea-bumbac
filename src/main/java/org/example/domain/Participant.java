@@ -3,23 +3,20 @@ package org.example.domain;
 import java.util.Objects;
 
 public class Participant extends Entity<Long> {
-
-
-
     public String nume;
 
     public String prenume;
 
     public int capacitateMotor;
 
-    public String echipa;
+    public Long idEchipa;
 
-    public Participant(Long id, String nume, String prenume, int capacitateMotor, String echipa) {
+    public Participant(Long id, String nume, String prenume, int capacitateMotor, Long echipa) {
         setId(id);
         this.nume = nume;
         this.prenume = prenume;
         this.capacitateMotor = capacitateMotor;
-        this.echipa = echipa;
+        this.idEchipa = echipa;
     }
 
     public String getNume() {
@@ -46,12 +43,12 @@ public class Participant extends Entity<Long> {
         this.capacitateMotor = capacitateMotor;
     }
 
-    public String getEchipa() {
-        return echipa;
+    public Long getEchipa() {
+        return idEchipa;
     }
 
-    public void setEchipa(String echipa) {
-        this.echipa = echipa;
+    public void setEchipa(Long echipa) {
+        this.idEchipa = echipa;
     }
 
     @Override
@@ -59,12 +56,12 @@ public class Participant extends Entity<Long> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Participant that = (Participant) o;
-        return capacitateMotor == that.capacitateMotor && Objects.equals(nume, that.nume) && Objects.equals(prenume, that.prenume) && Objects.equals(echipa, that.echipa);
+        return capacitateMotor == that.capacitateMotor && Objects.equals(nume, that.nume) && Objects.equals(prenume, that.prenume) && Objects.equals(idEchipa, that.idEchipa);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nume, prenume, capacitateMotor, echipa);
+        return Objects.hash(nume, prenume, capacitateMotor, idEchipa);
     }
 
 
