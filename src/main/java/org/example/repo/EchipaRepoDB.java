@@ -24,7 +24,7 @@ public class EchipaRepoDB implements IEchipaRepo {
     }
 
     @Override
-    public Optional<Echipa> getEchipaDupaNume(String teamName) {
+    public Long getEchipaDupaNume(String teamName) {
         logger.traceEntry("getEchipaDupaNume with task {} ", teamName);
         Connection connection = jdbcUtils.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -34,7 +34,7 @@ public class EchipaRepoDB implements IEchipaRepo {
                 if (resultSet.next()) {
                     Echipa team = extract(resultSet);
                     logger.traceExit(team);
-                    return Optional.of(team);
+                    return team.getId();
                 }
             }
         } catch (SQLException sqlException) {
@@ -42,7 +42,7 @@ public class EchipaRepoDB implements IEchipaRepo {
             System.err.println("DB Error : " + sqlException);
         }
         logger.traceExit("null");
-        return Optional.empty();
+        return 0l;
     }
 
     @Override

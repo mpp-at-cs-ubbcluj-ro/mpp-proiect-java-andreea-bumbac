@@ -11,8 +11,12 @@ public class Participant extends Entity<Long> {
 
     public Long idEchipa;
 
-    public Participant(Long id, String nume, String prenume, int capacitateMotor, Long echipa) {
-        setId(id);
+    {
+        setId(0L);
+    }
+
+    public Participant(String nume, String prenume, int capacitateMotor, Long echipa) {
+
         this.nume = nume;
         this.prenume = prenume;
         this.capacitateMotor = capacitateMotor;

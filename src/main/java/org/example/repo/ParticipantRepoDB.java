@@ -40,11 +40,16 @@ public class ParticipantRepoDB implements IParticipantRepo {
     }
 
     @Override
+    public Optional<Participant> getParticipant(Participant participant) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Participant> get(Long id) {
         logger.traceEntry();
         Connection connection = dbUtils.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement(
-                "SELECT * FROM participants WHERE id=?")) {
+                "SELECT * FROM Participant WHERE idParticipant=?")) {
             preparedStatement.setLong(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -147,7 +152,7 @@ public class ParticipantRepoDB implements IParticipantRepo {
         Integer engineCapacity = resultSet.getInt("capacitateMotor");
         Long teamID = resultSet.getLong("idEchipa");
 
-        Participant participant = new Participant(id, firstName, lastName, engineCapacity, teamID);
+        Participant participant = new Participant(firstName, lastName, engineCapacity, teamID);
         return participant;
     }
 }

@@ -132,7 +132,7 @@ public class UserRepoDB implements IUserRepo {
         String username = resultSet.getString("username");
         String passwordToken = resultSet.getString("parola");
 
-        User user = new User(id, username, passwordToken);
+        User user = new User(username, passwordToken);
         return user;
     }
 }

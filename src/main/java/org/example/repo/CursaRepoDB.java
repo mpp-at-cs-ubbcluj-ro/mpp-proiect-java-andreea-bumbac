@@ -24,6 +24,29 @@ public class CursaRepoDB implements ICursaRepo {
     }
 
     @Override
+    public Collection<Cursa> getCursaDupaMotor(Integer engineCapacity) {
+        logger.traceEntry("getRacesByEngineCapacity with task {} ", engineCapacity);
+        Connection connection = jdbcUtils.getConnection();
+        Collection<Cursa> races = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT * FROM races WHERE engineCc=?")) {
+            preparedStatement.setInt(1, engineCapacity);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Cursa race = extract(resultSet);
+                    races.add(race);
+                }
+            }
+        } catch (SQLException sqlException) {
+            logger.error(sqlException);
+            System.err.println("DB Error : " + sqlException);
+        }
+        logger.traceExit(races);
+        return races;
+    }
+
+
+    @Override
     public Optional<Cursa> getCursaDupaNume(String name) {
         logger.traceEntry("getCursaDupaNume with task {} ", name);
         Connection connection = jdbcUtils.getConnection();
@@ -140,12 +163,12 @@ public class CursaRepoDB implements ICursaRepo {
     }
 
     private Cursa extract(ResultSet resultSet) throws SQLException {
-        Long id = resultSet.getLong("id");
+        Long id = resultSet.getLong("idCursa");
         String name = resultSet.getString("numeCursa");
         Integer number = resultSet.getInt("nrParticipanti");
         Integer engineCapacity = resultSet.getInt("capacitateCilindrica");
 
-        Cursa race = new Cursa(id, name, number, engineCapacity);
+        Cursa race = new Cursa(id, name, 0, engineCapacity);
 
         return race;
     }

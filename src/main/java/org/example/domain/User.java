@@ -7,8 +7,11 @@ public class User extends Entity<Long> {
     public String parola;
 
 
-    public User(Long id, String username, String parola) {
-        setId(id);
+    {
+        setId(0L);
+    }
+    public User( String username, String parola) {
+
         this.username = username;
         this.parola = parola;
 

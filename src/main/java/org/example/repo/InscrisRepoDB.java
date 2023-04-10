@@ -38,6 +38,7 @@ public class InscrisRepoDB implements IInscrisRepo {
         Collection<Inscris> raceEntries = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(
                 "SELECT * FROM Inscris WHERE idCursa=?")) {
+            preparedStatement.setLong(1, raceID);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Inscris raceEntry = extract(resultSet);
@@ -51,6 +52,34 @@ public class InscrisRepoDB implements IInscrisRepo {
         logger.traceExit(raceEntries);
         return raceEntries;
     }
+
+
+
+    /*
+    @Override
+    public Collection<Cursa> getRacesWhereNotRegisteredAndEngineCapacity(Long participantID, Integer engineCc) {
+        logger.traceEntry("getRacesWhereNotRegistered with tasks {}, {} ", participantID, engineCc);
+        Connection connection = jdbcUtils.getConnection();
+        Collection<Cursa> raceEntries = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "SELECT * FROM Cursa WHERE idCursa NOT IN " +
+                        "(SELECT idCursa from Inscris WHERE idParticipant=?)" +
+                        " AND capacitateCilindrica=?")) {
+            preparedStatement.setLong(1, participantID);
+            preparedStatement.setInt(2, engineCc);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Cursa race = extractRace(resultSet);
+                    raceEntries.add(race);
+                }
+            }
+        } catch (SQLException sqlException) {
+            logger.error(sqlException);
+            System.err.println("DB Error : " + sqlException);
+        }
+        logger.traceExit(raceEntries);
+        return raceEntries;
+    }*/
 
     @Override
     public Optional<Inscris> get(Long id) {
@@ -73,6 +102,17 @@ public class InscrisRepoDB implements IInscrisRepo {
         logger.traceExit("null");
         return Optional.empty();
     }
+
+    /*
+    private Cursa extractRace(ResultSet resultSet) throws SQLException {
+        Long id = resultSet.getLong("idCursa");
+        String name = resultSet.getString("nuneCursa");
+        Integer engineCapacity = resultSet.getInt("capacitateCilindrica");
+
+        Cursa race = new Cursa(id, name, engineCapacity);
+        race.setID(id);
+        return race;
+    }*/
 
     @Override
     public Collection<Inscris> read() {
@@ -112,6 +152,22 @@ public class InscrisRepoDB implements IInscrisRepo {
     }
 
     @Override
+    public void deleteByIds(Long participantID, Long raceID) {
+        logger.traceEntry("deleting task of participantID={}, raceID={} ", participantID, raceID);
+        Connection connection = jdbcUtils.getConnection();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(
+                "DELETE FROM Inscris WHERE idParticipant=? AND idCursa=?")) {
+            preparedStatement.setLong(1, participantID);
+            preparedStatement.setLong(2, raceID);
+            int result = preparedStatement.executeUpdate();
+            logger.traceExit("Deleted {} instances", result);
+        } catch (SQLException sqlException) {
+            logger.error(sqlException);
+            System.err.println("DB Error : " + sqlException);
+        }
+    }
+
+    @Override
     public void delete(Long id) {
         logger.traceEntry("deleting task of id={} ", id);
         Connection connection = jdbcUtils.getConnection();
@@ -131,9 +187,9 @@ public class InscrisRepoDB implements IInscrisRepo {
     }
 
     private Inscris extract(ResultSet resultSet) throws SQLException {
-        Long id = resultSet.getLong("id");
-        Long participantID = resultSet.getLong("participantID");
-        Long raceID = resultSet.getLong("raceID");
+        Long id = resultSet.getLong("idInscris");
+        Long participantID = resultSet.getLong("idParticipant");
+        Long raceID = resultSet.getLong("idCursa");
 
         final Optional<Cursa> race = raceRepository.get(raceID);
         final Optional<Participant> participant = participantRepository.get(participantID);

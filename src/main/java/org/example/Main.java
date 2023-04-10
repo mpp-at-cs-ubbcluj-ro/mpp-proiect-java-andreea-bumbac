@@ -14,7 +14,7 @@ public class Main {
         try {
             properties.load(new FileReader("bd.config"));
             ParticipantRepoDB participantDBRepository = new ParticipantRepoDB(properties);
-            participantDBRepository.add(new Participant(1l, "Pop", "Alin", 300, 3l));
+            participantDBRepository.add(new Participant( "Pop", "Alin", 300, 3l));
             Collection<Participant> participants = participantDBRepository.read();
             for (Participant p : participants) {
                 System.out.println(p);
